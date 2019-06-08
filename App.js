@@ -1,49 +1,64 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import {
+    Container,
+    Button,
+    Header,
+    Icon,
+    Item,
+    Input,
+    Left,
+    Body, Title, Right, Content
+} from "native-base";
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
+import userFormValidation from './src/useFormValidation'
+import validateAuth from './src/validateAuth'
+
+const INIT_STATE = {
+    username: "",
+    password: ""
+}
+
+export default function App() {
+    const {handleChange, handleSubmit, isSubmitting, errors, values} = userFormValidation(INIT_STATE, validateAuth);
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
+        <Container style={styles.container}>
+            <Header rounded style={styles.header}>
+                <Left>
+                    <Button transparent onPress={() => console.log('open') }>
+                        <Icon active name="ios-menu" />
+                    </Button>
+                </Left>
+                <Body>
+                <Title>RN Hooks Form Validation</Title>
+                </Body>
+                <Right />
+            </Header>
+            <Content style={{ padding: 16 }}>
+
+                <Item error={errors.username && true}>
+                    <Input placeholder={'Username'} name={'username'} value={values.username} onChangeText={(value) =>handleChange('username', value)} />
+                </Item>
+                {errors.username && <Text>{errors.username}</Text>}
+
+                <Item error={errors.password && true} last>
+                    <Input placeholder={'Password'} secureTextEntry value={values.password} name={'password'} onChangeText={(value) => handleChange('password', value)}/>
+                </Item>
+                {errors.password && <Text>{errors.password}</Text>}
+
+                <Button block style={{ marginTop: 16 }} onPress={handleSubmit} disabled={isSubmitting}>
+                    <Text>Sign In</Text>
+                </Button>
+
+            </Content>
+        </Container>
     );
-  }
+
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+
 });
